@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jogo da Cobra</title>
+</head>
+<body>
+    
+    <canvas id="stage" width="400" height="400" style="margin:auto"></canvas>
+    <script>
+
+        window.onload = function(){
+
+            var stage = document.getElementById("stage");
+            var ctx = stage.getContext("2d");
+            document.addEventListener("keydown",keyPush);
+
+            setInterval(game,100);
+
+            const vel = 1;
+
+            var vx = vy = 0;
+            var px = 10;
+            var py = 15;
+            var tp = 20;
+            var qp = 20;
+            var ax = ay = 15;
+
+            var rastro = [];
+            calda = 5;
+
+            function game(){
+                px += vx;
+                py += vy;
+                if (px<0){
+                   px = qp - 1;
+                }
+                if (px>qp-1){
+                    px = 0;
+                }
+                if (py<0){
+                    py = qp-1;
+                }
+                if (py>qp-1){
+                    py = 0;
+                }
+
+                ctx.fillStyle = "black";
+                ctx.fillRect(0, 0, stage.width, stage.height);
+
+                ctx.fillStyle = "red";
+                ctx.fillRect(ax*tp, ay*tp, tp, tp);
+
+                ctx.fillStyle = "gray";
+                for (var i=0; i< rastro.length; i++){
+                    ctx.fillRect(rastro[i].x*tp, rastro[i].y*tp, tp, tp);
+                    if (rastro[i].x == px && rastro[i].y == py) {
+                        vx = vy = 0;
+                        calda = 5;
+                    }
+                }
+
+                rastro.push({x:px, y:py})
+                while (rastro.length > calda){
+                    rastro.shift();
+                }
+
+                if(ax==px && ay==py){
+                    calda++;
+                    ax = Math.floor(Math.random()*qp);
+                    ay = Math.floor(Math.random()*qp);
+                }           
+            }
+            
+            function keyPush(event){
+                switch (event.keyCode) {
+                    case 37: //esquerda
+                        vx = -vel;
+                        vy = 0;
+                        break;
+                    case 38: //cima
+                        vx = 0;
+                        vy = -vel;
+                        break;
+                    case 39: //direita
+                        vx = vel;
+                        vy = 0;
+                        break;
+                    case 40: //baixo
+                        vx = 0;
+                        vy = vel;
+                        break;
+                    default:
+                        break;
+                }
+            }
+        }
+    </script>
+</body>
+</html>
